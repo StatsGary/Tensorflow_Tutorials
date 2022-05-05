@@ -128,4 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 01_CV_Classification/images/
+01_CV_Classification/chromedriver/
 
