@@ -1,4 +1,5 @@
 #Selenium helps you use this executable to automate Chrome
+from multiprocessing.sharedctypes import Value
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import requests
@@ -74,20 +75,43 @@ def download_image(down_path, url, file_name, image_type='JPEG',
 if __name__ == '__main__':
     # Google search URLS
     google_urls = ['https://www.google.com/search?q=lewis+grabban&rlz=1C1CHBF_en-GBGB924GB924&sxsrf=ALiCzsZYqtC0Dr5X-fqi3qg8rqxDuI87HQ:1651752199175&source=lnms&tbm=isch&sa=X&ved=2ahUKEwiku9q4qMj3AhUdQ0EAHa5gBkgQ_AUoAnoECAEQBA&biw=2048&bih=1004&dpr=0.94#imgrc=rRrRxw8wQ7YxWM',
-                  'https://www.google.com/search?q=philip+zinckernagel&tbm=isch&ved=2ahUKEwiWwcmwzcj3AhUN0oUKHYmmCwUQ2-cCegQIABAA&oq=philipzin&gs_lcp=CgNpbWcQARgAMgYIABAKEBg6BwgjEO8DECc6BQgAEIAEOgYIABAFEB46BAgAEB5QsRBYiRRgpSNoAHAAeACAATqIAdwBkgEBNJgBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=wuNzYpbYDY2klwSJza4o&bih=1004&biw=2048&rlz=1C1CHBF_en-GBGB924GB924',
-                  'https://www.google.com/search?rlz=1C1CHBF_en-GBGB924GB924&sxsrf=ALiCzsbdBXzzbO-rUCgRzokBwQ3ieCg4kQ:1651763782663&source=lnms&tbm=isch&sa=X&ved=2ahUKEwj-zJLM08j3AhWRi1wKHWriAEUQ_AUoAXoECAIQAw&q=Brennan%20Johnson&lei=SepzYuD4HdTC8gK28IPYCg&biw=1920&bih=969&dpr=1']
+                   'https://www.google.com/search?q=philip+zinckernagel&tbm=isch&ved=2ahUKEwiWwcmwzcj3AhUN0oUKHYmmCwUQ2-cCegQIABAA&oq=philipzin&gs_lcp=CgNpbWcQARgAMgYIABAKEBg6BwgjEO8DECc6BQgAEIAEOgYIABAFEB46BAgAEB5QsRBYiRRgpSNoAHAAeACAATqIAdwBkgEBNJgBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=wuNzYpbYDY2klwSJza4o&bih=1004&biw=2048&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=Brennan+Johnson&rlz=1C1CHBF_en-GBGB924GB924&sxsrf=ALiCzsajIeK_WBDuPjZNIjaxRtMoC3yf5w:1651766190726&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjHi7PI3Mj3AhWBZ8AKHRP5BA4Q_AUoAnoECAIQBA&biw=1920&bih=969&dpr=1',
+                   'https://www.google.com/search?q=djed+spence&tbm=isch&ved=2ahUKEwiDzqfJ3Mj3AhWLgM4BHfx_D5cQ2-cCegQIABAA&oq=djed+spence&gs_lcp=CgNpbWcQAzIHCCMQ7wMQJzIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDoFCAAQgAQ6CggAELEDEIMBEEM6BAgAEEM6CAgAEIAEELEDOgQIABADOgcIABCxAxBDOgYIABAIEB46BAgAEB5QsAhYoRhgiRloAXAAeACAAV6IAfMGkgECMTOYAQCgAQGqAQtnd3Mtd2l6LWltZ8ABAQ&sclient=img&ei=sPNzYoO2JouBur4P_P-9uAk&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=james+garner+footballer&tbm=isch&ved=2ahUKEwjTk-mD3cj3AhUIexoKHSkkBI4Q2-cCegQIABAA&oq=james+garner+footballer&gs_lcp=CgNpbWcQAzIFCAAQgAQyBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBg6BwgjEO8DECc6CggAELEDEIMBEEM6BAgAEEM6BggAEAgQHlDNA1iyHmCgH2gDcAB4AIABT4gBogeSAQIxNZgBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=K_RzYpPSFIj2aanIkPAI&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=sam+surridge&tbm=isch&ved=2ahUKEwi-g-aG3cj3AhWeg84BHZ18ClwQ2-cCegQIABAA&oq=sam+surridge&gs_lcp=CgNpbWcQAzIHCCMQ7wMQJzIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDoGCAAQBxAeOgQIABBDOgQIABADOggIABCABBCxAzoICAAQsQMQgwE6BQgAEIAEOgcIABCxAxBDOgsIABCABBCxAxCDAToGCAAQCBAeUNoGWOgUYIIXaABwAHgAgAFUiAHsBpIBAjEzmAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=MfRzYv6mI56Hur4Pnfmp4AU&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=brice+samba&tbm=isch&ved=2ahUKEwinwYCZ3cj3AhVOyRoKHVjuC5UQ2-cCegQIABAA&oq=brice+samba&gs_lcp=CgNpbWcQAzIHCCMQ7wMQJzIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQyBAgAEB4yBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBg6CAgAELEDEIMBOggIABCABBCxAzoHCAAQsQMQQzoECAAQQzoECAAQAzoGCAAQCBAeULQIWOYXYP4ZaABwAHgAgAFKiAGBBpIBAjEymAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=V_RzYue5Ls6Sa9jcr6gJ&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=keinan+davis+footballer&tbm=isch&ved=2ahUKEwjn7dqj3cj3AhUBdBoKHXxWCAMQ2-cCegQIABAA&oq=keinan+davis+footballer&gs_lcp=CgNpbWcQAzIECAAQGDoHCCMQ7wMQJzoFCAAQgAQ6BAgAEB46CAgAELEDEIMBOgsIABCABBCxAxCDAToICAAQgAQQsQM6BAgAEEM6BwgAELEDEEM6BggAEAUQHjoGCAAQCBAeUO8JWO4qYOAraABwAHgAgAFViAH8C5IBAjI0mAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=bvRzYuf-DIHoafysoRg&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=ethan+horvath+football&tbm=isch&ved=2ahUKEwixt9HN3cj3AhVJ3RoKHdoiAeoQ2-cCegQIABAA&oq=ethan+horvath+football&gs_lcp=CgNpbWcQAzoHCCMQ7wMQJzoECAAQQzoFCAAQgAQ6BAgAEB46BAgAEBhQiQRYgQ9gxRBoAHAAeACAAVeIAeUEkgECMTCYAQCgAQGqAQtnd3Mtd2l6LWltZ8ABAQ&sclient=img&ei=xvRzYrG8CMm6a9rFhNAO&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=steve+cook+forest&tbm=isch&ved=2ahUKEwiXipXR3cj3AhVKexoKHYg2BjcQ2-cCegQIABAA&oq=steve+cook+&gs_lcp=CgNpbWcQARgAMgcIIxDvAxAnMgQIABADMgUIABCABDIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQ6CAgAEIAEELEDOggIABCxAxCDAToECAAQQzoLCAAQgAQQsQMQgwFQ3gZYhhJgkSJoAHAAeACAAbMBiAGFB5IBBDExLjGYAQCgAQGqAQtnd3Mtd2l6LWltZ8ABAQ&sclient=img&ei=zfRzYtfvIMr2aYjtmLgD&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=joe+worrall&tbm=isch&ved=2ahUKEwiLhJna3cj3AhXW44UKHYvcCjIQ2-cCegQIABAA&oq=joe+worrall&gs_lcp=CgNpbWcQAzIHCCMQ7wMQJzIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQyBAgAEEMyBQgAEIAEMgUIABCABDIECAAQGDIECAAQGDoICAAQsQMQgwE6CwgAEIAEELEDEIMBOggIABCABBCxAzoKCAAQsQMQgwEQQzoHCAAQsQMQQ1DcZ1jXdWDPeWgBcAB4AIABkAGIAY8HkgEEMTEuMZgBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=4PRzYouUHdbHlwSLuauQAw&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=ryan+yates&tbm=isch&ved=2ahUKEwje3vni3cj3AhXa0oUKHfW4D5kQ2-cCegQIABAA&oq=ryan+yates&gs_lcp=CgNpbWcQAzIHCCMQ7wMQJzIFCAAQgAQyBQgAEIAEMgYIABAFEB4yBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBg6BAgAEEM6CAgAELEDEIMBOgsIABCABBCxAxCDAToICAAQgAQQsQM6CggjEO8DEOoCECc6CggAELEDEIMBEEM6BwgAELEDEENQpghYlBdgwxhoAXAAeACAAViIAbgGkgECMTKYAQCgAQGqAQtnd3Mtd2l6LWltZ7ABCsABAQ&sclient=img&ei=8vRzYt6dM9qllwT18b7ICQ&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=jack+colback+footballer&tbm=isch&ved=2ahUKEwiGi83s3cj3AhUDpBoKHTQKDzcQ2-cCegQIABAA&oq=jack+colback+footballer&gs_lcp=CgNpbWcQAzIECAAQGDoHCCMQ7wMQJzoFCAAQgAQ6BggAEAcQHjoECAAQQzoICAAQsQMQgwE6CwgAEIAEELEDEIMBOggIABCABBCxAzoGCAAQBRAeOgQIABAeOgYIABAIEB5QowhY0iRgpSVoAHAAeACAAZgBiAGxDZIBBDIzLjGYAQCgAQGqAQtnd3Mtd2l6LWltZ8ABAQ&sclient=img&ei=B_VzYsbrBIPIarSUvLgD&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=scott+mckenna&tbm=isch&ved=2ahUKEwj-mJD53cj3AhUQQhoKHQpnDfMQ2-cCegQIABAA&oq=scott+&gs_lcp=CgNpbWcQARgAMgcIIxDvAxAnMgQIABBDMgcIABCxAxBDMgQIABBDMgQIABBDMgcIABCxAxBDMggIABCxAxCDATILCAAQgAQQsQMQgwEyCAgAEIAEELEDMgsIABCABBCxAxCDAToECAAQAzoFCAAQgARQ6QRYwgtghxZoAHAAeACAAUuIAd0DkgEBN5gBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=IfVzYr6EFZCEaYrOtZgP&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=cafu+forest&tbm=isch&ved=2ahUKEwi7xdeN3sj3AhUE4hoKHcHTCO8Q2-cCegQIABAA&oq=cafu+forest&gs_lcp=CgNpbWcQAzIFCAAQgAQyBggAEAgQHjoECAAQQzoECAAQHjoECAAQGFAAWKIHYKUJaABwAHgAgAFZiAHSA5IBATeYAQCgAQGqAQtnd3Mtd2l6LWltZ8ABAQ&sclient=img&ei=TPVzYrvvG4TEa8Gno_gO&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=max+lowe+footballer&tbm=isch&ved=2ahUKEwjpj4aQ3sj3AhUL_BoKHSF6CmwQ2-cCegQIABAA&oq=max+lowe+footballer&gs_lcp=CgNpbWcQAzIECAAQGDoHCCMQ7wMQJzoGCAAQCBAeOgsIABCABBCxAxCDAToFCAAQgAQ6BAgAEAM6CAgAELEDEIMBOggIABCABBCxAzoECAAQQzoHCAAQsQMQQzoGCAAQBRAeOgQIABAeUKMIWLsiYJgjaABwAHgAgAGdAYgB9wqSAQQxOS4xmAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=UfVzYqmjGYv4a6H0qeAG&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+                   'https://www.google.com/search?q=joe+lolley&rlz=1C1CHBF_en-GBGB924GB924&hl=en&sxsrf=ALiCzsYdA_zTQwIGhtfmL__WXkmGyvR7aQ:1651766657726&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjduIqn3sj3AhULJMAKHZ8hCoYQ_AUoAnoECAEQBA&biw=1920&bih=969&dpr=1',
+                   'https://www.google.com/search?q=alex+mighten&tbm=isch&ved=2ahUKEwi73fyn3sj3AhUD-4UKHSjyBpAQ2-cCegQIABAA&oq=alex&gs_lcp=CgNpbWcQARgAMgcIIxDvAxAnMgcIIxDvAxAnMgoIABCxAxCDARBDMgQIABBDMgQIABBDMgQIABBDMggIABCABBCxAzIECAAQQzIICAAQgAQQsQMyCAgAEIAEELEDOgUIABCABDoECAAQGDoLCAAQgAQQsQMQgwE6CAgAELEDEIMBOgcIABCxAxBDUKIHWJwLYLwUaABwAHgAgAFLiAHIApIBATWYAQCgAQGqAQtnd3Mtd2l6LWltZ8ABAQ&sclient=img&ei=g_VzYvuPJIP2lwSo5JuACQ&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924&hl=en'
+    ]
     
     # Labels for the players
-    labels = ['lewis_grabban', 'philip_zinckernagel', 'brennan_johnson']
-    player_path = 'images/train/'
+    labels = [
+        'lewis_grabban', 'philip_zinckernagel', 'brennan_johnson',
+        'djed_spence', 'james_garner', 'sam_surridge', 'brice_samba',
+        'keinan_davis', 'ethan_horvath', 'steve_cook', 'joe_worrall',
+        'ryan_yates', 'jack_colback', 'scott_mckenna', 'cafu', 'max_lowe',
+        'joe_lolley', 'alex_mighten'
+    ]
+
+    # Check the length of the lists
+    if len(google_urls) != len(labels):
+        raise ValueError('The length of the url list does not match the labels list.')
+
+
+
+    player_path = 'images/nottingham_forest/'
     # Make the directory if it doesn't exist
     for lbl in labels:
-        # Start afresh
-
-        if os.path.exists(player_path + lbl):
-            print(f'Removing detritus directory: {str(lbl)}')
-            os.rmdir(player_path+lbl)
-
         if not os.path.exists(player_path + lbl):
             print(f'Making directory: {str(lbl)}')
             os.makedirs(player_path+lbl)
@@ -96,7 +120,7 @@ if __name__ == '__main__':
         urls = get_images_from_google(wd, 0, 100, url_current)
         # Once we have added our urls to empty set then 
         for i, url in enumerate(urls):
-            download_image(down_path=f'images/train/{lbl}/', 
+            download_image(down_path=f'images/nottingham_forest/{lbl}/', 
                         url=url, 
                         file_name=str(i+1)+ '.jpg',
                         verbose=True) 
