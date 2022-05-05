@@ -19,6 +19,20 @@ What this is doing is using the virtualenv command to link to our --python execu
 To activate the virtual environment use:
 
 ```
-
+.\venv\Scripts\activate
 ```
 
+## Deactivate the virtual environment
+
+```
+deactivate
+```
+
+## Export out our install packages in the environment
+
+To export out the packages in our environment we can send them to a requirements.txt file:
+
+
+```
+pip freeze > requirements.txt
+```
