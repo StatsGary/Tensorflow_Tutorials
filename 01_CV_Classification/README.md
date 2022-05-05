@@ -36,3 +36,11 @@ To export out the packages in our environment we can send them to a requirements
 ```
 pip freeze > requirements.txt
 ```
+
+## Install from our requirements.txt when building a new environment
+
+To install from a requirements.txt use:
+
+```
+pip install -r requirements.txt
+```
