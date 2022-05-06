@@ -1,5 +1,6 @@
 #https://towardsdatascience.com/an-in-depth-efficientnet-tutorial-using-tensorflow-how-to-use-efficientnet-on-a-custom-dataset-1cab0997f65c
 #https://stackoverflow.com/questions/45806669/how-to-use-predict-generator-with-imagedatagenerator
+#https://www.tensorflow.org/tutorials/keras/classification
 import tensorflow as tf
 from tensorflow.keras.applications import *
 from tensorflow.keras import models
@@ -147,6 +148,5 @@ plt.savefig('Model_Loss.png')
 # Recall best model checkpoint and validate with testing data
 import numpy as np
 predicted = model.predict(testing_generator)
-first_pred = predicted[0]
 label_prediction = np.argmax(predicted)
 print(label_prediction)
