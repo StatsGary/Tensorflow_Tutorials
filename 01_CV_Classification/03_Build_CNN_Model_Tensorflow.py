@@ -1,66 +1,140 @@
-from xml.etree.ElementInclude import include
+import tensorflow as tf
+from tensorflow.keras.applications import *
+from tensorflow.keras import models
+from tensorflow.keras.layers import Dense, Dropout,GlobalMaxPooling2D
+from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.metrics import Accuracy, AUC, Precision, Recall
 import pandas as pd
-import numpy as np 
-import itertools
-import tensorflow
-import keras
-from sklearn import metrics
-from sklearn.metrics import confusion_matrix
-from tensorflow.keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img 
-from tensorflow.keras.models import Sequential 
+from sklearn import model_selection
+from tqdm import tqdm
 from tensorflow.keras import optimizers
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.layers import Dropout, Flatten, Dense 
-from tensorflow.keras import applications 
-from keras.utils.np_utils import to_categorical 
-import matplotlib.pyplot as plt 
-import matplotlib.image as mpimg
-import math 
-import datetime
-import time
+import os
+import matplotlib.pyplot as plt
 
-# Create timer decorator for 
+# Check if GPU is configured correctl
+#Use this to check if the GPU is configured correctly
+from tensorflow.python.client import device_lib
+#print(device_lib.list_local_devices())
 
-EPOCHS = 50
-BATCH_SIZE = 25
+EPOCHS = 10
+BATCH_SIZE = 8
+NUMBER_OF_CLASSES = 18 #Number of Forest players in directory
+LEARNING_RATE = 0.01
 
 #----------------------------------------------------------------------------------------
 # Working with images
 #----------------------------------------------------------------------------------------
-img_width, img_height = 224, 224
-# Create a file to save model weights
-top_model_weights_pth = 'nf_cnn_model.h5'
+img_width, img_height, RGB_channels = 224, 224, 3
 # Setting the dataset paths
 train_dir = 'images/train'
 val_dir = 'images/val'
 test_dir = 'images/test'
 
 #----------------------------------------------------------------------------------------
-# Use VGG16 for Transfer Learning
+# Use EfficientNet
 #----------------------------------------------------------------------------------------
-vgg16 = applications.vgg16.VGG16(include_top=False, weights='imagenet')
-data_generator = ImageDataGenerator(rescale= 1. / 255) #Scales the pixels between 0 - 1
+input_shape = (img_width, img_height,3 )
+conv_base = EfficientNetB6(weights="imagenet", include_top=False, input_shape=input_shape)
+
+# Configure model for custom dataset
+model = models.Sequential()
+model.add(conv_base)
+model.add(GlobalMaxPooling2D(name='gap'))
+model.add(Dropout(rate=0.2, name='dropout_overfit'))
+model.add(Dense(NUMBER_OF_CLASSES, activation='softmax', name='class_out'))
+#Freeze the convolutional base
+conv_base.trainable = False
 
 #----------------------------------------------------------------------------------------
-# Create the model weights and features using VGG16
+# Create ImageDataGenerators
 #----------------------------------------------------------------------------------------
-start = datetime.datetime.now()
+train_datagen = ImageDataGenerator(
+    rescale=1.0 / 255,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode="nearest",
+)
+# Do not augment your validation data
+test_datagen = ImageDataGenerator(rescale=1.0 / 255)
 
-generator = data_generator.flow_from_directory(
+train_generator = train_datagen.flow_from_directory(
     train_dir,
-    target_size=(img_width, img_height),
+    # All images will be resized to target height and width.
+    target_size=(img_height, img_width),
     batch_size=BATCH_SIZE,
-    class_mode=None, 
-    shuffle=False
+    # Since we use categorical_crossentropy loss, we need categorical labels
+    class_mode="categorical",
 )
 
-# Get the size of the samples
-train_samples_size = len(generator.filenames)
-num_classes = len(generator.class_indices)
-
-predict_size_train = int(math.ceil(train_samples_size))
-bottleneck_features_training = vgg16.predict_generator(generator, predict_size_train)
+no_train_images = len(train_generator.filenames)
 
 
+# Create validation generator
+validation_generator = test_datagen.flow_from_directory(
+    val_dir,
+    target_size=(img_height, img_width),
+    batch_size=BATCH_SIZE,
+    class_mode="categorical",
+)
+
+# Pull out the size of the train, val and test gen 
+train_n, val_n = len(train_generator.filenames), len(validation_generator.filenames)
+print(f'There are {train_n} examples in the train set and {val_n} in the validation set.')
+
+model.compile(
+    loss='categorical_crossentropy', 
+    optimizer=optimizers.RMSprop(learning_rate=LEARNING_RATE),
+    metrics=[Accuracy()]
+)
+
+print(model.summary())
+
+checkpoint_path = "training_1/cp.ckpt"
+checkpoint_dir = os.path.dirname(checkpoint_path)
+
+# Create a callback that saves the model's weights
+cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+                                                 save_weights_only=True,
+                                                 verbose=1)
+
+es_callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
+# Train the model
+history = model.fit(
+    train_generator, 
+    steps_per_epoch=train_n // BATCH_SIZE,
+    epochs=EPOCHS,
+    validation_data=validation_generator,
+    validation_steps=val_n // BATCH_SIZE,
+    verbose=1,
+    callbacks=[es_callback, cp_callback])
+
+# Plot the history
+# list all data in history
+print(history.history.keys())
+# summarize history for accuracy
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+plt.savefig('Model_Accuracy.png')
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+plt.savefig('Model_Loss.png')
+
+
+# Recall best model checkpoint and validate with testing data
 
 
