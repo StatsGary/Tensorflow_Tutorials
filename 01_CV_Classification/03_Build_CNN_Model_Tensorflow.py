@@ -145,6 +145,8 @@ plt.savefig('Model_Loss.png')
 
 
 # Recall best model checkpoint and validate with testing data
-
+import numpy as np
 predicted = model.predict(testing_generator)
-print(predicted)
+first_pred = predicted[0]
+label_prediction = np.argmax(predicted)
+print(label_prediction)
