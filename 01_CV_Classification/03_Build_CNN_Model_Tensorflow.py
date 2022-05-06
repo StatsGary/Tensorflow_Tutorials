@@ -1,3 +1,5 @@
+#https://towardsdatascience.com/an-in-depth-efficientnet-tutorial-using-tensorflow-how-to-use-efficientnet-on-a-custom-dataset-1cab0997f65c
+#https://stackoverflow.com/questions/45806669/how-to-use-predict-generator-with-imagedatagenerator
 import tensorflow as tf
 from tensorflow.keras.applications import *
 from tensorflow.keras import models
@@ -16,7 +18,7 @@ import matplotlib.pyplot as plt
 from tensorflow.python.client import device_lib
 #print(device_lib.list_local_devices())
 
-EPOCHS = 10
+EPOCHS = 5
 BATCH_SIZE = 8
 NUMBER_OF_CLASSES = 18 #Number of Forest players in directory
 LEARNING_RATE = 0.01
@@ -59,7 +61,7 @@ train_datagen = ImageDataGenerator(
     fill_mode="nearest",
 )
 # Do not augment your validation data
-test_datagen = ImageDataGenerator(rescale=1.0 / 255)
+val_datagen = ImageDataGenerator(rescale=1.0 / 255)
 
 train_generator = train_datagen.flow_from_directory(
     train_dir,
@@ -72,13 +74,20 @@ train_generator = train_datagen.flow_from_directory(
 
 no_train_images = len(train_generator.filenames)
 
-
 # Create validation generator
-validation_generator = test_datagen.flow_from_directory(
+validation_generator = val_datagen.flow_from_directory(
     val_dir,
     target_size=(img_height, img_width),
     batch_size=BATCH_SIZE,
-    class_mode="categorical",
+    class_mode="categorical"
+)
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+testing_generator = test_datagen.flow_from_directory(
+    test_dir,
+    target_size=(img_height, img_width),
+    batch_size=BATCH_SIZE,
+    class_mode="categorical"
 )
 
 # Pull out the size of the train, val and test gen 
@@ -137,4 +146,5 @@ plt.savefig('Model_Loss.png')
 
 # Recall best model checkpoint and validate with testing data
 
-
+predicted = model.predict(testing_generator)
+print(predicted)
