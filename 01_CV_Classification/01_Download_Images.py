@@ -74,12 +74,7 @@ def download_image(down_path, url, file_name, image_type='JPEG',
 
 if __name__ == '__main__':
     # Google search URLS
-    google_urls = ['https://www.google.com/search?q=lewis+grabban&rlz=1C1CHBF_en-GBGB924GB924&sxsrf=ALiCzsZYqtC0Dr5X-fqi3qg8rqxDuI87HQ:1651752199175&source=lnms&tbm=isch&sa=X&ved=2ahUKEwiku9q4qMj3AhUdQ0EAHa5gBkgQ_AUoAnoECAEQBA&biw=2048&bih=1004&dpr=0.94#imgrc=rRrRxw8wQ7YxWM',
-                   'https://www.google.com/search?q=philip+zinckernagel&tbm=isch&ved=2ahUKEwiWwcmwzcj3AhUN0oUKHYmmCwUQ2-cCegQIABAA&oq=philipzin&gs_lcp=CgNpbWcQARgAMgYIABAKEBg6BwgjEO8DECc6BQgAEIAEOgYIABAFEB46BAgAEB5QsRBYiRRgpSNoAHAAeACAATqIAdwBkgEBNJgBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=wuNzYpbYDY2klwSJza4o&bih=1004&biw=2048&rlz=1C1CHBF_en-GBGB924GB924',
-                   'https://www.google.com/search?q=Brennan+Johnson&rlz=1C1CHBF_en-GBGB924GB924&sxsrf=ALiCzsajIeK_WBDuPjZNIjaxRtMoC3yf5w:1651766190726&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjHi7PI3Mj3AhWBZ8AKHRP5BA4Q_AUoAnoECAIQBA&biw=1920&bih=969&dpr=1',
-                   'https://www.google.com/search?q=djed+spence&tbm=isch&ved=2ahUKEwiDzqfJ3Mj3AhWLgM4BHfx_D5cQ2-cCegQIABAA&oq=djed+spence&gs_lcp=CgNpbWcQAzIHCCMQ7wMQJzIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDoFCAAQgAQ6CggAELEDEIMBEEM6BAgAEEM6CAgAEIAEELEDOgQIABADOgcIABCxAxBDOgYIABAIEB46BAgAEB5QsAhYoRhgiRloAXAAeACAAV6IAfMGkgECMTOYAQCgAQGqAQtnd3Mtd2l6LWltZ8ABAQ&sclient=img&ei=sPNzYoO2JouBur4P_P-9uAk&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
-                   'https://www.google.com/search?q=james+garner+footballer&tbm=isch&ved=2ahUKEwjTk-mD3cj3AhUIexoKHSkkBI4Q2-cCegQIABAA&oq=james+garner+footballer&gs_lcp=CgNpbWcQAzIFCAAQgAQyBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBg6BwgjEO8DECc6CggAELEDEIMBEEM6BAgAEEM6BggAEAgQHlDNA1iyHmCgH2gDcAB4AIABT4gBogeSAQIxNZgBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=K_RzYpPSFIj2aanIkPAI&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
-                   'https://www.google.com/search?q=sam+surridge&tbm=isch&ved=2ahUKEwi-g-aG3cj3AhWeg84BHZ18ClwQ2-cCegQIABAA&oq=sam+surridge&gs_lcp=CgNpbWcQAzIHCCMQ7wMQJzIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDIECAAQGDoGCAAQBxAeOgQIABBDOgQIABADOggIABCABBCxAzoICAAQsQMQgwE6BQgAEIAEOgcIABCxAxBDOgsIABCABBCxAxCDAToGCAAQCBAeUNoGWOgUYIIXaABwAHgAgAFUiAHsBpIBAjEzmAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=MfRzYv6mI56Hur4Pnfmp4AU&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
+    google_urls = [
                    'https://www.google.com/search?q=brice+samba&tbm=isch&ved=2ahUKEwinwYCZ3cj3AhVOyRoKHVjuC5UQ2-cCegQIABAA&oq=brice+samba&gs_lcp=CgNpbWcQAzIHCCMQ7wMQJzIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQyBAgAEB4yBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBg6CAgAELEDEIMBOggIABCABBCxAzoHCAAQsQMQQzoECAAQQzoECAAQAzoGCAAQCBAeULQIWOYXYP4ZaABwAHgAgAFKiAGBBpIBAjEymAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=V_RzYue5Ls6Sa9jcr6gJ&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
                    'https://www.google.com/search?q=keinan+davis+footballer&tbm=isch&ved=2ahUKEwjn7dqj3cj3AhUBdBoKHXxWCAMQ2-cCegQIABAA&oq=keinan+davis+footballer&gs_lcp=CgNpbWcQAzIECAAQGDoHCCMQ7wMQJzoFCAAQgAQ6BAgAEB46CAgAELEDEIMBOgsIABCABBCxAxCDAToICAAQgAQQsQM6BAgAEEM6BwgAELEDEEM6BggAEAUQHjoGCAAQCBAeUO8JWO4qYOAraABwAHgAgAFViAH8C5IBAjI0mAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=bvRzYuf-DIHoafysoRg&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
                    'https://www.google.com/search?q=ethan+horvath+football&tbm=isch&ved=2ahUKEwixt9HN3cj3AhVJ3RoKHdoiAeoQ2-cCegQIABAA&oq=ethan+horvath+football&gs_lcp=CgNpbWcQAzoHCCMQ7wMQJzoECAAQQzoFCAAQgAQ6BAgAEB46BAgAEBhQiQRYgQ9gxRBoAHAAeACAAVeIAeUEkgECMTCYAQCgAQGqAQtnd3Mtd2l6LWltZ8ABAQ&sclient=img&ei=xvRzYrG8CMm6a9rFhNAO&bih=969&biw=1920&rlz=1C1CHBF_en-GBGB924GB924',
@@ -96,9 +91,7 @@ if __name__ == '__main__':
     
     # Labels for the players
     labels = [
-        'lewis_grabban', 'philip_zinckernagel', 'brennan_johnson',
-        'djed_spence', 'james_garner', 'sam_surridge', 'brice_samba',
-        'keinan_davis', 'ethan_horvath', 'steve_cook', 'joe_worrall',
+        'brice_samba','keinan_davis', 'ethan_horvath', 'steve_cook', 'joe_worrall',
         'ryan_yates', 'jack_colback', 'scott_mckenna', 'cafu', 'max_lowe',
         'joe_lolley', 'alex_mighten'
     ]
@@ -106,8 +99,6 @@ if __name__ == '__main__':
     # Check the length of the lists
     if len(google_urls) != len(labels):
         raise ValueError('The length of the url list does not match the labels list.')
-
-
 
     player_path = 'images/nottingham_forest/'
     # Make the directory if it doesn't exist
