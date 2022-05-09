@@ -17,8 +17,8 @@ import matplotlib.pyplot as plt
 from tensorflow.python.client import device_lib
 #print(device_lib.list_local_devices())
 
-EPOCHS = 5
-BATCH_SIZE = 8
+EPOCHS = 20
+BATCH_SIZE = 2
 NUMBER_OF_CLASSES = 18 #Number of Forest players in directory
 LEARNING_RATE = 0.01
 
@@ -55,7 +55,7 @@ train_datagen = ImageDataGenerator(
     width_shift_range=0.2,
     height_shift_range=0.2,
     shear_range=0.2,
-    zoom_range=0.2,
+    zoom_range=0.1,
     horizontal_flip=True,
     fill_mode="nearest",
 )
@@ -78,7 +78,8 @@ validation_generator = val_datagen.flow_from_directory(
     val_dir,
     target_size=(img_height, img_width),
     batch_size=BATCH_SIZE,
-    class_mode="categorical"
+    class_mode="categorical",
+    shuffle=False
 )
 
 

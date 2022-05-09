@@ -1,4 +1,4 @@
-# Recall best model checkpoint and validate with testing data
+
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.applications import *
@@ -7,6 +7,7 @@ from tensorflow.keras.layers import Dense, Dropout,GlobalMaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.metrics import Accuracy
 from tensorflow.keras import optimizers
+from PIL import Image
 
 NUMBER_OF_CLASSES = 18
 BATCH_SIZE = 8
@@ -23,11 +24,15 @@ testing_generator = test_datagen.flow_from_directory(
     test_dir,
     target_size=(img_height, img_width),
     batch_size=BATCH_SIZE,
-    class_mode="categorical"
+    class_mode="categorical",
+    shuffle=False,
+    class_mode=None
 )
 
 input_shape = (img_width, img_height,3 )
-conv_base = EfficientNetB6(weights="imagenet", include_top=False, input_shape=input_shape)
+conv_base = EfficientNetB6(weights="imagenet", 
+                           include_top=False, 
+                           input_shape=input_shape)
 
 model = models.Sequential()
 model.add(conv_base)
@@ -44,6 +49,5 @@ model.compile(
 )
 
 # Load model checkpoint 
-predicted = model.predict(testing_generator)
-label_prediction = np.argmax(predicted)
-print(label_prediction)
+predicted = model.predict_generator(testing_generator)
+print(predicted)
