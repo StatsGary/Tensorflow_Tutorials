@@ -130,7 +130,5 @@ dmypy.json
 01_CV_Classification/images/
 01_CV_Classification/chromedriver/
 
-01_CV_Classification/training_1/checkpoint
-01_CV_Classification/training_1/cp.ckpt.data-00000-of-00001
-01_CV_Classification/training_1/cp.ckpt.index
 01_CV_Classification/.vscode
+01_CV_Classification/training_1/tf_weights_best.hdf5

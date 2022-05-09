@@ -1,12 +1,10 @@
-#https://towardsdatascience.com/an-in-depth-efficientnet-tutorial-using-tensorflow-how-to-use-efficientnet-on-a-custom-dataset-1cab0997f65c
-#https://stackoverflow.com/questions/45806669/how-to-use-predict-generator-with-imagedatagenerator
-#https://www.tensorflow.org/tutorials/keras/classification
+
 import tensorflow as tf
 from tensorflow.keras.applications import *
 from tensorflow.keras import models
 from tensorflow.keras.layers import Dense, Dropout,GlobalMaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.metrics import Accuracy, AUC, Precision, Recall
+from tensorflow.keras.metrics import Accuracy
 import pandas as pd
 from sklearn import model_selection
 from tqdm import tqdm
@@ -83,13 +81,6 @@ validation_generator = val_datagen.flow_from_directory(
     class_mode="categorical"
 )
 
-test_datagen = ImageDataGenerator(rescale=1./255)
-testing_generator = test_datagen.flow_from_directory(
-    test_dir,
-    target_size=(img_height, img_width),
-    batch_size=BATCH_SIZE,
-    class_mode="categorical"
-)
 
 # Pull out the size of the train, val and test gen 
 train_n, val_n = len(train_generator.filenames), len(validation_generator.filenames)
@@ -103,13 +94,13 @@ model.compile(
 
 print(model.summary())
 
-checkpoint_path = "training_1/cp.ckpt"
-checkpoint_dir = os.path.dirname(checkpoint_path)
+checkpoint_path = "training_1/tf_weights_best.hdf5"
 
 # Create a callback that saves the model's weights
 cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-                                                 save_weights_only=True,
-                                                 verbose=1)
+                                                 save_best_only=True,
+                                                 verbose=1, 
+                                                 mode='max')
 
 es_callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
 # Train the model
@@ -144,9 +135,3 @@ plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 plt.savefig('Model_Loss.png')
 
-
-# Recall best model checkpoint and validate with testing data
-import numpy as np
-predicted = model.predict(testing_generator)
-label_prediction = np.argmax(predicted)
-print(label_prediction)
